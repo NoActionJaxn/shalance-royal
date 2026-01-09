@@ -1,3 +1,4 @@
+import React from "react";
 import {
   isRouteErrorResponse,
   Links,
@@ -5,42 +6,54 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useLoaderData,
 } from "react-router";
-
-import type { Route } from "./+types/root";
-import "./app.css";
 import PageContainer from "./components/PageContainer";
-import { Header } from "./components/Header";
-import React from "react";
 import MobileMenu from "./components/MobileMenu";
-import useOnResize from "./hooks/useOnResize";
+import { Header } from "./components/Header";
 import { Footer } from "./components/Footer";
+import Page from "./components/Page";
+import Container from "./components/Container";
+import { WRESTLING_SITE_SETTINGS_REQUEST } from "./constants/requests";
+import { getSanityClient } from "./lib/client";
+import useOnResize from "./hooks/useOnResize";
+import type { Route } from "./+types/root";
 import type { CallToAction } from "./types/cta";
+import type { SanityImage, WrestlingSiteSettings } from "./types/sanity";
+import "./app.css";
 
-const MENU: CallToAction[] = [
-  { label: "Home", path: "/" },
-  { label: "About", path: "/about" },
-  { label: "Contact", path: "/contact" },
-];
+interface LoaderData {
+  menu: CallToAction[];
+  socials: CallToAction[];
+  logo?: SanityImage;
+  altLogo?: SanityImage;
+}
 
-const SOCIALS: CallToAction[] = [
-  { 
-    label: "Twitter", 
-    path: "https://twitter.com/shalance_royal",
+export async function loader(): Promise<LoaderData> {
+  const client = getSanityClient();
+
+  const settings: WrestlingSiteSettings = await client.fetch(WRESTLING_SITE_SETTINGS_REQUEST);
+
+  const menu: CallToAction[] = (settings?.menuItems ?? []).map((item) => ({
+    label: item.label,
+    path: item.url,
+  }));
+
+  const socials: CallToAction[] = (settings?.socialNetworkItems ?? []).map((item) => ({
+    label: item.label,
+    path: item.url,
     icon: {
-      prefix: "fab",
-      iconName: "fa-twitter"
-    }
-  },
-  { 
-    label: "Instagram",
-    path: "https://instagram.com/shalance_royal",
-    icon: {
-      prefix: "fab",
-      iconName: "fa-instagram"
-    }
-  },
-];
+      prefix: item.icon.iconStyle,
+      iconName: item.icon.iconName,
+    },
+  }));
+
+  const logo: SanityImage | undefined = settings?.logo;
+  
+  const altLogo: SanityImage | undefined = settings?.alternateLogo;
+  console.log(settings?.socialNetworkItems)
+  return { menu, socials, logo, altLogo };
+}
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -55,7 +68,9 @@ export const links: Route.LinksFunction = () => [
   },
 ];
 
-export function Layout({ children }: { children: React.ReactNode }) {
+export function Layout({ children }: {children: React.ReactNode}) {
+  const { menu, socials, logo, altLogo } = useLoaderData<LoaderData>();
+  
   const [isOpen, setIsOpen] = React.useState(false);
 
   const handleToggleMenu = () => {
@@ -79,17 +94,17 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <body>
         <PageContainer>
           <Header
-            menu={MENU}
+            menu={menu}
             isOpen={isOpen}
             toggleMenu={handleToggleMenu}
           />
           <MobileMenu
-            menu={MENU}
+            menu={menu}
             isOpen={isOpen}
             setIsOpen={setIsOpen}
           />
           {children}
-          <Footer menu={MENU} socials={SOCIALS} />
+          <Footer menu={menu} socials={socials} />
         </PageContainer>
         <ScrollRestoration />
         <script
@@ -124,14 +139,17 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
   }
 
   return (
-    <main className="pt-16 p-4 container mx-auto">
-      <h1>{message}</h1>
-      <p>{details}</p>
-      {stack && (
-        <pre className="w-full p-4 overflow-x-auto">
-          <code>{stack}</code>
-        </pre>
-      )}
-    </main>
+
+    <Page>
+      <Container fluid>
+        <h1>{message}</h1>
+        <p>{details}</p>
+        {stack && (
+          <pre className="w-full p-4 overflow-x-auto">
+            <code>{stack}</code>
+          </pre>
+        )}
+      </Container>
+    </Page>
   );
 }

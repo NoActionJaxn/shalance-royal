@@ -1,0 +1,91 @@
+import React from "react";
+import { useLoaderData } from "react-router";
+import Container from "~/components/Container";
+import Page from "~/components/Page";
+import RichText from "~/components/RichText";
+import { getSanityClient } from "~/lib/client";
+import { WRESTLING_SITE_SETTINGS_REQUEST, WRESTLING_SITE_ABOUT_PAGE_REQUEST } from "~/constants/requests";
+import type { WrestlingAboutPage, WrestlingSiteSettings } from "~/types/sanity";
+import type { Route } from "./+types/about";
+import Image from "~/components/Image";
+import GridGallery from "~/components/GridGallery";
+
+interface LoaderData {
+  siteTitle: string;
+  pageTitle: string;
+  about: {
+    title: string;
+    subtitle: string;
+    content: any[];
+    featuredImage?: WrestlingAboutPage["featuredImage"];
+    gallery?: WrestlingAboutPage["gallery"];
+  }
+}
+
+export async function loader() {
+  const client = getSanityClient();
+
+  const settings: WrestlingSiteSettings = await client.fetch(WRESTLING_SITE_SETTINGS_REQUEST);
+  const about: WrestlingAboutPage = await client.fetch(WRESTLING_SITE_ABOUT_PAGE_REQUEST);
+
+
+  const siteTitle = settings?.title;
+  const pageTitle = about?.pageTitle;
+
+  const aboutContent = {
+    title: about?.title,
+    subtitle: about?.subtitle,
+    content: about?.content,
+    featuredImage: about?.featuredImage,
+    gallery: about?.gallery,
+  }
+
+  return { siteTitle, pageTitle, about: aboutContent };
+}
+
+export const meta: Route.MetaFunction = ({ data }) => {
+  const siteTitle = data?.siteTitle ?? "Shalancé Royal";
+  const pageTitle = data?.pageTitle ?? "About";
+  return [
+    { title: `${siteTitle} | ${pageTitle}` },
+  ];
+}
+
+export default function About() {
+  const { about } = useLoaderData<LoaderData>();
+
+  return (
+    <>
+      <Page className="flex items-center justify-center">
+        <Container>
+          <div className=" grid grid-cols-1 md:grid-cols-2 gap-14">
+            <div className="grid-cols-1">
+              <div className="rounded-lg overflow-hidden mx-auto aspect-3/4">
+                <Image className="h-full object-cover" asset={about.featuredImage?.asset._ref} />
+              </div>
+            </div>
+            <div className="grid-cols-1 space-y-4">
+              <div className="space-y-2">
+                <h1 className="text-4xl font-bold">{about.title}</h1>
+                <h2 className="text-2xl">{about.subtitle}</h2>
+              </div>
+              <div>
+                <RichText value={about.content} />
+              </div>
+            </div>
+          </div>
+        </Container>
+      </Page>
+      <Page>
+        <Container>
+          <div className="mt-8 space-y-8">
+            <div className="px-4">
+              <h2 className="text-3xl font-bold">Gallery</h2>
+            </div>
+            {about.gallery && <GridGallery images={about.gallery} title="Gallery" />}
+          </div>
+        </Container>
+      </Page>
+    </>
+  );
+}

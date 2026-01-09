@@ -1,0 +1,8 @@
+export const WRESTLING_SITE_SETTINGS_REQUEST = `*[_id == "wrestlingSiteSettingsPage"][0]`;
+export const WRESTLING_SITE_HOME_PAGE_REQUEST = `*[_id == "wrestlingHomePage"][0]`;
+export const WRESTLING_SITE_ABOUT_PAGE_REQUEST = `*[_id == "wrestlingAboutPage"][0]`;
+export const WRESTLING_SITE_MATCHES_PAGE_REQUEST = `*[_id == "wrestlingMatchesPage"][0]`;
+export const WRESTLING_SITE_EVENTS_PAGE_REQUEST = `*[_id == "wrestlingEventsPage"][0]`;
+export const WRESTLING_SITE_GALLERY_PAGE_REQUEST = `*[_id == "wrestlingGalleryPage"][0]`;
+export const WRESTLING_SITE_MATCHES_REQUEST = `*[_type == "wrestlingMatch"] | order(date desc)`;
+export const WRESTLING_SITE_MATCH_BY_SLUG_REQUEST = `*[_type == "wrestlingMatch" && slug.current == $slug][0]`;

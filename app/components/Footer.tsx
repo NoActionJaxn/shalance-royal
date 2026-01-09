@@ -47,13 +47,14 @@ export function Footer({ logo: Logo, menu = [], socials = [] }: FooterProps) {
           </div>
           <div className="flex items-end justify-end">
             {socials.length > 0 && (
-              <div>
-                <ul className="flex gap-4">
+              <div className="flex items-center gap-4 pb-4">
+                <h2 className="text-xs text-slate-300 uppercase">Follow Me</h2>
+                <ul className="flex flex-wrap gap-4">
                   {socials.map((item) => (
                     <li key={item.path}>
                       <Link
                         to={item.path}
-                        className="text-slate-300 text-2xl"
+                        className="text-slate-300 text-xl"
                       >
                         <span className="sr-only">{item.label}</span>
                         <i className={classNames(item.icon?.prefix, item.icon?.iconName)} />

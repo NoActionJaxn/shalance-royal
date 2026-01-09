@@ -9,12 +9,16 @@
     "typecheck": "react-router typegen && tsc"
   },
   "dependencies": {
+    "@portabletext/react": "^6.0.2",
     "@react-router/node": "7.12.0",
     "@react-router/serve": "7.12.0",
+    "@sanity/client": "^7.14.0",
+    "@sanity/image-url": "^2.0.2",
     "classnames": "^2.5.1",
     "isbot": "^5.1.31",
     "lodash.debounce": "^4.0.8",
     "react": "^19.2.3",
+    "react-big-calendar": "^1.19.4",
     "react-dom": "^19.2.3",
     "react-router": "7.12.0"
   },
@@ -25,6 +29,7 @@
     "@types/lodash.debounce": "^4.0.9",
     "@types/node": "^22",
     "@types/react": "^19.2.7",
+    "@types/react-big-calendar": "^1.16.3",
     "@types/react-dom": "^19.2.3",
     "tailwindcss": "^4.1.13",
     "typescript": "^5.9.2",

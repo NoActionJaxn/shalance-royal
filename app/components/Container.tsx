@@ -1,7 +1,7 @@
 import classNames from "classnames";
 
 export interface ContainerProps extends React.HTMLAttributes<HTMLDivElement> {
-  children: React.ReactNode | React.ReactNode[];
+  children?: React.ReactNode | React.ReactNode[];
   fluid?: boolean;
 }
 
