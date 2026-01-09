@@ -1,3 +1,5 @@
+import type { CallToAction } from "./cta";
+
 export interface SanityBlock {
   _key: string;
   _type: "block";
@@ -65,6 +67,32 @@ export interface SanityOpenGraphSEO {
   ogType?: string;
   ogUrl?: string;
   ogSiteName?: string;
+}
+
+export interface SanityColor {
+  alpha: number;
+  hex: string;
+  rgb: {
+    _type: string;
+    a: number;
+    r: number;
+    g: number;
+    b: number;
+  };
+  hsv: {
+    _type: string;
+    a: number;
+    h: number;
+    s: number;
+    v: number;
+  };
+  hsl: {
+    _type: string;
+    a: number;
+    h: number;
+    s: number;
+    l: number;
+  };
 }
 
 export interface WrestlingSiteSettings {
@@ -177,4 +205,38 @@ export interface WrestlingEvent {
   eventLocation?: string;
   eventUrl?: string;
   eventDescription: SanityBlock[];
+}
+
+export interface Side {
+  _createdAt: string;
+  _updatedAt: string;
+  _id: string;
+  _originalId?: string;
+  id: string;
+  rev: string;
+  _type: string;
+  title?: string;
+  subtitle?: string;
+  content?: SanityBlock[];
+  image?: SanityImage;
+  backgroundImage?: SanityImage;
+  route: CallToAction;
+  backgroundColor?: SanityColor;
+  textColor?: SanityColor;
+}
+
+export interface RootSiteSettings {
+  _createdAt: string;
+  _updatedAt: string;
+  _id: string;
+  _originalId?: string;
+  id: string;
+  rev: string;
+  _type: string;
+  seo: SanitySEO;
+  title?: string;
+  subtitle?: string;
+  content?: SanityBlock[];
+  image?: SanityImage;
+  route?: CallToAction;
 }

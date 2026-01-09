@@ -12,6 +12,7 @@ export default [
     route("side-a/gallery", "./routes/side-a/gallery.tsx"),
     route("side-a/contact", "./routes/side-a/contact.tsx"),
   ]),
+  
   layout("./routes/side-b/layout.tsx", [
     route("side-b", "./routes/side-b/home.tsx"),
   ]),

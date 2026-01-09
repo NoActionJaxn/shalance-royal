@@ -6,59 +6,11 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
-  useLoaderData,
 } from "react-router";
-import PageContainer from "./components/PageContainer";
-import MobileMenu from "./components/MobileMenu";
-import Header from "./components/Header";
-import Footer from "./components/Footer";
 import Page from "./components/Page";
 import Container from "./components/Container";
-import useOnResize from "./hooks/useOnResize";
-import { WRESTLING_SITE_SETTINGS_REQUEST } from "./constants/requests";
-import { getSanityClient } from "./lib/client";
 import type { Route } from "./+types/root";
-import type { CallToAction } from "./types/cta";
-import type { SanityImage, WrestlingSiteSettings } from "./types/sanity";
 import "./app.css";
-
-interface LoaderData {
-  description?: string;
-  menu: CallToAction[];
-  socials: CallToAction[];
-  logo?: SanityImage;
-  altLogo?: SanityImage;
-}
-
-export async function loader(): Promise<LoaderData> {
-  try {
-    const client = getSanityClient();
-    const settings: WrestlingSiteSettings = await client.fetch(WRESTLING_SITE_SETTINGS_REQUEST);
-
-    const menu: CallToAction[] = (settings?.menuItems ?? []).map((item) => ({
-      label: item.label,
-      path: item.url,
-    }));
-
-    const socials: CallToAction[] = (settings?.socialNetworkItems ?? []).map((item) => ({
-      label: item.label,
-      path: item.url,
-      icon: {
-        prefix: item.icon.iconStyle,
-        iconName: item.icon.iconName,
-      },
-    }));
-
-    const logo: SanityImage | undefined = settings?.logo;
-    const altLogo: SanityImage | undefined = settings?.alternateLogo;
-    const description: string | undefined = settings?.description;
-
-    return { menu, socials, logo, altLogo, description };
-  } catch (err) {
-    if (err instanceof Response) throw err;
-    throw new Response("Sanity configuration error", { status: 500, statusText: "Sanity configuration error" });
-  }
-}
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -74,14 +26,6 @@ export const links: Route.LinksFunction = () => [
 ];
 
 export function Layout({ children }: { children: React.ReactNode }) {
-  const data = useLoaderData<LoaderData>();
-
-  const menu = data?.menu ?? [];
-  const socials = data?.socials ?? [];
-  const logo = data?.logo;
-  const altLogo = data?.altLogo;
-  const description = data?.description;
-
   return (
     <html lang="en">
       <head>

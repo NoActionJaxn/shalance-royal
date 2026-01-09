@@ -6,3 +6,5 @@ export const WRESTLING_SITE_EVENTS_PAGE_REQUEST = `*[_id == "wrestlingEventsPage
 export const WRESTLING_SITE_GALLERY_PAGE_REQUEST = `*[_id == "wrestlingGalleryPage"][0]`;
 export const WRESTLING_SITE_MATCHES_REQUEST = `*[_type == "wrestlingMatch"] | order(date desc)`;
 export const WRESTLING_SITE_MATCH_BY_SLUG_REQUEST = `*[_type == "wrestlingMatch" && slug.current == $slug][0]`;
+export const ROOT_SITE_SETTINGS_REQUEST = `*[_id == "rootSiteSettingsPage"][0]`;
+export const ROOT_SIDES_REQUEST = `*[_type == "side"]`;

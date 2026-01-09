@@ -5,7 +5,7 @@ import { WRESTLING_SITE_HOME_PAGE_REQUEST, WRESTLING_SITE_SETTINGS_REQUEST } fro
 import { getSanityClient } from "~/lib/client";
 import RichText from "~/components/RichText";
 import type { WrestlingHomePage, WrestlingSiteSettings } from "~/types/sanity";
-import type { Route } from "../+types/home";
+import type { Route } from "./+types/home";
 
 interface LoaderData {
   siteTitle: string;
