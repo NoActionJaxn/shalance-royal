@@ -1,11 +1,11 @@
+import { useLoaderData } from "react-router";
 import Container from "~/components/Container";
 import Page from "~/components/Page";
 import { WRESTLING_SITE_HOME_PAGE_REQUEST, WRESTLING_SITE_SETTINGS_REQUEST } from "~/constants/requests";
 import { getSanityClient } from "~/lib/client";
+import RichText from "~/components/RichText";
 import type { WrestlingHomePage, WrestlingSiteSettings } from "~/types/sanity";
 import type { Route } from "./+types/home";
-import { useLoaderData } from "react-router";
-import RichText from "~/components/RichText";
 
 interface LoaderData {
   siteTitle: string;

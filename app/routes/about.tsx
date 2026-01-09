@@ -1,11 +1,10 @@
-import React from "react";
 import { useLoaderData } from "react-router";
 import Container from "~/components/Container";
 import Page from "~/components/Page";
 import RichText from "~/components/RichText";
 import { getSanityClient } from "~/lib/client";
-import { WRESTLING_SITE_SETTINGS_REQUEST, WRESTLING_SITE_ABOUT_PAGE_REQUEST } from "~/constants/requests";
-import type { WrestlingAboutPage, WrestlingSiteSettings } from "~/types/sanity";
+import { WRESTLING_SITE_SETTINGS_REQUEST, WRESTLING_SITE_ABOUT_PAGE_REQUEST, WRESTLING_SITE_GALLERY_PAGE_REQUEST } from "~/constants/requests";
+import type { SanityImage, WrestlingAboutPage, WrestlingGalleryPage, WrestlingSiteSettings } from "~/types/sanity";
 import type { Route } from "./+types/about";
 import Image from "~/components/Image";
 import GridGallery from "~/components/GridGallery";
@@ -18,8 +17,8 @@ interface LoaderData {
     subtitle: string;
     content: any[];
     featuredImage?: WrestlingAboutPage["featuredImage"];
-    gallery?: WrestlingAboutPage["gallery"];
   }
+  gallery?: SanityImage[];
 }
 
 export async function loader() {
@@ -27,7 +26,7 @@ export async function loader() {
 
   const settings: WrestlingSiteSettings = await client.fetch(WRESTLING_SITE_SETTINGS_REQUEST);
   const about: WrestlingAboutPage = await client.fetch(WRESTLING_SITE_ABOUT_PAGE_REQUEST);
-
+  const galleryItems: WrestlingGalleryPage = await client.fetch(WRESTLING_SITE_GALLERY_PAGE_REQUEST);
 
   const siteTitle = settings?.title;
   const pageTitle = about?.pageTitle;
@@ -37,10 +36,11 @@ export async function loader() {
     subtitle: about?.subtitle,
     content: about?.content,
     featuredImage: about?.featuredImage,
-    gallery: about?.gallery,
   }
 
-  return { siteTitle, pageTitle, about: aboutContent };
+  const gallery = galleryItems?.galleryImages?.slice(0, 10) ?? [];
+
+  return { siteTitle, pageTitle, about: aboutContent, gallery };
 }
 
 export const meta: Route.MetaFunction = ({ data }) => {
@@ -52,12 +52,12 @@ export const meta: Route.MetaFunction = ({ data }) => {
 }
 
 export default function About() {
-  const { about } = useLoaderData<LoaderData>();
+  const { about, gallery } = useLoaderData<LoaderData>();
 
   return (
     <>
       <Page className="flex flex-col gap-16 items-center justify-center">
-        <Container className="mt-16">
+        <Container>
           <div className=" grid grid-cols-1 md:grid-cols-2 gap-14">
             <div className="grid-cols-1">
               <div className="rounded-lg overflow-hidden mx-auto aspect-3/4">
@@ -75,13 +75,16 @@ export default function About() {
             </div>
           </div>
         </Container>
-        <Container className="mb-16">
-          <div className="mt-8 space-y-8">
-            <div className="px-4">
-              <h2 className="text-3xl font-bold">Gallery</h2>
+        <Container>
+          {gallery && gallery.length > 0 && (
+            <div className="mt-8 space-y-8">
+              <div className="px-4">
+                <h2 className="text-3xl font-bold">Gallery</h2>
+              </div>
+              <GridGallery images={gallery} title="Gallery" />
+              
             </div>
-            {about.gallery && <GridGallery images={about.gallery} title="Gallery" />}
-          </div>
+          )}
         </Container>
       </Page>
     </>

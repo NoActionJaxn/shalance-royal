@@ -1,9 +1,7 @@
-import { useState } from "react";
 import { Link } from "react-router";
-
-import type { CallToAction } from "~/types/cta";
 import MenuButton from "./MenuButton";
 import Container from "./Container";
+import type { CallToAction } from "~/types/cta";
 
 interface HeaderProps {
   Logo?: React.ComponentType;
