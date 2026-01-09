@@ -93,7 +93,6 @@ export default function EventCalendar({ events }: EventCalendarProps) {
             ›
           </button>
         </div>
-        <div />
       </div>
     );
   };

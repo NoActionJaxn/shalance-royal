@@ -19,22 +19,27 @@ interface LoaderData {
 }
 
 export async function loader() {
-  const client = getSanityClient();
+  try {
+    const client = getSanityClient();
 
-  const settings: WrestlingSiteSettings = await client.fetch(WRESTLING_SITE_SETTINGS_REQUEST);
-  const home: WrestlingHomePage = await client.fetch(WRESTLING_SITE_HOME_PAGE_REQUEST);
+    const settings: WrestlingSiteSettings = await client.fetch(WRESTLING_SITE_SETTINGS_REQUEST);
+    const home: WrestlingHomePage = await client.fetch(WRESTLING_SITE_HOME_PAGE_REQUEST);
 
-  const siteTitle = settings?.title;
-  const pageTitle = home?.pageTitle;
+    const siteTitle = settings?.title;
+    const pageTitle = home?.pageTitle;
 
-  const hero = {
-    title: home?.heroTitle,
-    subTitle: home?.heroSubtitle,
-    content: home?.heroContent,
-    backgroundImage: home?.heroSectionBackgroundImage,
+    const hero = {
+      title: home?.heroTitle,
+      subTitle: home?.heroSubtitle,
+      content: home?.heroContent,
+      backgroundImage: home?.heroSectionBackgroundImage,
+    }
+
+    return { siteTitle, pageTitle, hero };
+  } catch (err) {
+    if (err instanceof Response) throw err;
+    throw new Response("Sanity configuration error", { status: 500, statusText: "Sanity configuration error" });
   }
-
-  return { siteTitle, pageTitle, hero };
 }
 
 export const meta: Route.MetaFunction = ({ data }) => {
@@ -46,7 +51,8 @@ export const meta: Route.MetaFunction = ({ data }) => {
 }
 
 export default function Home() {
-  const { hero } = useLoaderData<LoaderData>();
+  const data = useLoaderData<LoaderData>();
+  const hero = data?.hero;
 
   return (
     <Page className="flex items-center justify-center">

@@ -18,18 +18,23 @@ interface LoaderData {
 }
 
 export async function loader() {
-  const client = getSanityClient();
+  try {
+    const client = getSanityClient();
 
-  const settings: WrestlingSiteSettings = await client.fetch(WRESTLING_SITE_SETTINGS_REQUEST);
-  const eventsPage: WrestlingEventsPage = await client.fetch(WRESTLING_SITE_EVENTS_PAGE_REQUEST);
+    const settings: WrestlingSiteSettings = await client.fetch(WRESTLING_SITE_SETTINGS_REQUEST);
+    const eventsPage: WrestlingEventsPage = await client.fetch(WRESTLING_SITE_EVENTS_PAGE_REQUEST);
 
-  const siteTitle = settings?.title;
-  const pageTitle = eventsPage?.pageTitle;
-  const title = eventsPage?.title;
-  const description = eventsPage?.content;
-  const events = eventsPage?.upcomingEvents;
+    const siteTitle = settings?.title;
+    const pageTitle = eventsPage?.pageTitle;
+    const title = eventsPage?.title;
+    const description = eventsPage?.content;
+    const events = eventsPage?.upcomingEvents;
 
-  return { siteTitle, pageTitle, title, description, events };
+    return { siteTitle, pageTitle, title, description, events };
+  } catch (err) {
+    if (err instanceof Response) throw err;
+    throw new Response("Sanity configuration error", { status: 500, statusText: "Sanity configuration error" });
+  }
 }
 
 export const meta: Route.MetaFunction = ({ data }) => {
@@ -41,7 +46,10 @@ export const meta: Route.MetaFunction = ({ data }) => {
 }
 
 export default function Events() {
-  const { title, description, events } = useLoaderData<LoaderData>();
+  const data = useLoaderData<LoaderData>();
+  const title = data?.title;
+  const description = data?.description;
+  const events = data?.events;
 
   const calendarEvents = (events ?? []).map((event: WrestlingEvent) => ({
     title: event.eventTitle,
@@ -59,8 +67,8 @@ export default function Events() {
           <h1 className="text-4xl font-bold">{title}</h1>
           <RichText value={description ?? []} />
         </div>
-          <EventCalendar events={calendarEvents} />
-          <EventList title="Upcoming Events" events={calendarEvents} />
+        <EventCalendar events={calendarEvents} />
+        <EventList title="Upcoming Events" events={calendarEvents} />
       </Container>
     </Page>
   );

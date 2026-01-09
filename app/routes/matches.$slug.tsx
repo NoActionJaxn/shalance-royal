@@ -16,20 +16,25 @@ interface LoaderData {
 }
 
 export async function loader({ params }: Route.LoaderArgs) {
-  const client = getSanityClient();
+  try {
+    const client = getSanityClient();
 
-  const settings: WrestlingSiteSettings = await client.fetch(WRESTLING_SITE_SETTINGS_REQUEST);
-  const match: WrestlingMatch = await client.fetch(WRESTLING_SITE_MATCH_BY_SLUG_REQUEST, {
-    slug: params.slug,
-  });
+    const settings: WrestlingSiteSettings = await client.fetch(WRESTLING_SITE_SETTINGS_REQUEST);
+    const match: WrestlingMatch = await client.fetch(WRESTLING_SITE_MATCH_BY_SLUG_REQUEST, {
+      slug: params.slug,
+    });
 
-  if (!match) {
-    throw new Response("Match not found", { status: 404 });
+    if (!match) {
+      throw new Response("Match not found", { status: 404 });
+    }
+
+    const siteTitle = settings?.title ?? "Shalancé Royal";
+
+    return { siteTitle, match } satisfies LoaderData;
+  } catch (err) {
+    if (err instanceof Response) throw err;
+    throw new Response("Sanity configuration error", { status: 500, statusText: "Sanity configuration error" });
   }
-
-  const siteTitle = settings?.title ?? "Shalancé Royal";
-
-  return { siteTitle, match } satisfies LoaderData;
 }
 
 export const meta: Route.MetaFunction = ({ data }) => {
@@ -44,8 +49,9 @@ export const meta: Route.MetaFunction = ({ data }) => {
 };
 
 export default function MatchDetail() {
-  const { match } = useLoaderData<LoaderData>();
+  const data = useLoaderData<LoaderData>();
 
+  const match = data.match;
   const mainImage = match.matchImages?.[0];
 
   return (

@@ -17,20 +17,23 @@ interface LoaderData {
 }
 
 export async function loader() {
-  const client = getSanityClient();
+  try {
+    const client = getSanityClient();
 
-  const settings: WrestlingSiteSettings = await client.fetch(WRESTLING_SITE_SETTINGS_REQUEST);
-  const home: WrestlingGalleryPage = await client.fetch(WRESTLING_SITE_GALLERY_PAGE_REQUEST);
+    const settings: WrestlingSiteSettings = await client.fetch(WRESTLING_SITE_SETTINGS_REQUEST);
+    const galleryPage: WrestlingGalleryPage = await client.fetch(WRESTLING_SITE_GALLERY_PAGE_REQUEST);
 
-  console.log({ home })
+    const siteTitle = settings?.title;
+    const pageTitle = galleryPage?.pageTitle;
+    const title = galleryPage?.title;
+    const content = galleryPage?.content;
+    const gallery = galleryPage?.galleryImages;
 
-  const siteTitle = settings?.title;
-  const pageTitle = home?.pageTitle;
-  const title = home?.title;
-  const content = home?.content;
-  const gallery = home?.galleryImages;
-
-  return { siteTitle, pageTitle, title, content, gallery };
+    return { siteTitle, pageTitle, title, content, gallery };
+  } catch (err) {
+    if (err instanceof Response) throw err;
+    throw new Response("Sanity configuration error", { status: 500, statusText: "Sanity configuration error" });
+  }
 }
 
 export const meta: Route.MetaFunction = ({ data }) => {
@@ -42,13 +45,18 @@ export const meta: Route.MetaFunction = ({ data }) => {
 }
 
 export default function Gallery() {
-  const { title, content, gallery } = useLoaderData<LoaderData>();
+  const data = useLoaderData<LoaderData>();
+  
+  const title = data?.title;
+  const content = data?.content;
+  const gallery = data?.gallery;
+
   return (
     <Page>
       <Container className="py-16 space-y-8">
         <div className="space-y-4">
-        <h1 className="text-4xl">{title}</h1>
-        <RichText value={content ?? []} />
+          <h1 className="text-4xl">{title}</h1>
+          <RichText value={content ?? []} />
         </div>
         <div>
           <GridGallery images={gallery ?? []} title="Gallery Images" />

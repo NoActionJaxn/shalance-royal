@@ -2,12 +2,13 @@ import { useLoaderData } from "react-router";
 import Container from "~/components/Container";
 import Page from "~/components/Page";
 import RichText from "~/components/RichText";
+import Image from "~/components/Image";
+import GridGallery from "~/components/GridGallery";
 import { getSanityClient } from "~/lib/client";
 import { WRESTLING_SITE_SETTINGS_REQUEST, WRESTLING_SITE_ABOUT_PAGE_REQUEST, WRESTLING_SITE_GALLERY_PAGE_REQUEST } from "~/constants/requests";
 import type { SanityImage, WrestlingAboutPage, WrestlingGalleryPage, WrestlingSiteSettings } from "~/types/sanity";
 import type { Route } from "./+types/about";
-import Image from "~/components/Image";
-import GridGallery from "~/components/GridGallery";
+import { LinkButton } from "~/components/Buttons";
 
 interface LoaderData {
   siteTitle: string;
@@ -22,25 +23,30 @@ interface LoaderData {
 }
 
 export async function loader() {
-  const client = getSanityClient();
+  try {
+    const client = getSanityClient();
 
-  const settings: WrestlingSiteSettings = await client.fetch(WRESTLING_SITE_SETTINGS_REQUEST);
-  const about: WrestlingAboutPage = await client.fetch(WRESTLING_SITE_ABOUT_PAGE_REQUEST);
-  const galleryItems: WrestlingGalleryPage = await client.fetch(WRESTLING_SITE_GALLERY_PAGE_REQUEST);
+    const settings: WrestlingSiteSettings = await client.fetch(WRESTLING_SITE_SETTINGS_REQUEST);
+    const about: WrestlingAboutPage = await client.fetch(WRESTLING_SITE_ABOUT_PAGE_REQUEST);
+    const galleryItems: WrestlingGalleryPage = await client.fetch(WRESTLING_SITE_GALLERY_PAGE_REQUEST);
 
-  const siteTitle = settings?.title;
-  const pageTitle = about?.pageTitle;
+    const siteTitle = settings?.title;
+    const pageTitle = about?.pageTitle;
 
-  const aboutContent = {
-    title: about?.title,
-    subtitle: about?.subtitle,
-    content: about?.content,
-    featuredImage: about?.featuredImage,
+    const aboutContent = {
+      title: about?.title,
+      subtitle: about?.subtitle,
+      content: about?.content,
+      featuredImage: about?.featuredImage,
+    }
+
+    const gallery = galleryItems?.galleryImages?.slice(0, 10) ?? [];
+
+    return { siteTitle, pageTitle, about: aboutContent, gallery };
+  } catch (err) {
+    if (err instanceof Response) throw err;
+    throw new Response("Sanity configuration error", { status: 500, statusText: "Sanity configuration error" });
   }
-
-  const gallery = galleryItems?.galleryImages?.slice(0, 10) ?? [];
-
-  return { siteTitle, pageTitle, about: aboutContent, gallery };
 }
 
 export const meta: Route.MetaFunction = ({ data }) => {
@@ -52,7 +58,9 @@ export const meta: Route.MetaFunction = ({ data }) => {
 }
 
 export default function About() {
-  const { about, gallery } = useLoaderData<LoaderData>();
+  const data = useLoaderData<LoaderData>();
+  const about = data?.about;
+  const gallery = data?.gallery;
 
   return (
     <>
@@ -82,7 +90,9 @@ export default function About() {
                 <h2 className="text-3xl font-bold">Gallery</h2>
               </div>
               <GridGallery images={gallery} title="Gallery" />
-              
+              <div className="flex justify-end">
+                <LinkButton to="/gallery">View Full Gallery</LinkButton>
+              </div>
             </div>
           )}
         </Container>

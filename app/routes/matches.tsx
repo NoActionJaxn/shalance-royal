@@ -20,21 +20,26 @@ interface LoaderData {
 }
 
 export async function loader() {
-  const client = getSanityClient();
+  try {
+    const client = getSanityClient();
 
-  const settings: WrestlingSiteSettings = await client.fetch(WRESTLING_SITE_SETTINGS_REQUEST);
-  const matchPage: WrestlingMatchesPage = await client.fetch(WRESTLING_SITE_MATCHES_PAGE_REQUEST);
-  const matches: WrestlingMatch[] = await client.fetch(WRESTLING_SITE_MATCHES_REQUEST);
+    const settings: WrestlingSiteSettings = await client.fetch(WRESTLING_SITE_SETTINGS_REQUEST);
+    const matchPage: WrestlingMatchesPage = await client.fetch(WRESTLING_SITE_MATCHES_PAGE_REQUEST);
+    const matches: WrestlingMatch[] = await client.fetch(WRESTLING_SITE_MATCHES_REQUEST);
 
-  const siteTitle = settings?.title;
-  const pageTitle = matchPage?.pageTitle;
+    const siteTitle = settings?.title;
+    const pageTitle = matchPage?.pageTitle;
 
-  const matchData = {
-    title: matchPage?.title,
-    content: matchPage?.content,
+    const matchData = {
+      title: matchPage?.title,
+      content: matchPage?.content,
+    }
+
+    return { siteTitle, pageTitle, matchData, matches };
+  } catch (err) {
+    if (err instanceof Response) throw err;
+    throw new Response("Sanity configuration error", { status: 500, statusText: "Sanity configuration error" });
   }
-
-  return { siteTitle, pageTitle, matchData, matches };
 }
 
 export const meta: Route.MetaFunction = ({ data }) => {
@@ -48,7 +53,10 @@ export const meta: Route.MetaFunction = ({ data }) => {
 
 
 export default function Matches() {
-  const { matchData, matches } = useLoaderData<LoaderData>();
+  const data = useLoaderData<LoaderData>();
+  const matchData = data.matchData;
+  const matches = data.matches;
+  
   return (
     <Page>
       <Container className="py-16 space-y-4">

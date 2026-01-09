@@ -35,10 +35,6 @@ export async function loader(): Promise<LoaderData> {
     const client = getSanityClient();
     const settings: WrestlingSiteSettings = await client.fetch(WRESTLING_SITE_SETTINGS_REQUEST);
 
-    if (!settings) {
-      throw new Response("Match not found", { status: 404 });
-    }
-
     const menu: CallToAction[] = (settings?.menuItems ?? []).map((item) => ({
       label: item.label,
       path: item.url,
@@ -60,7 +56,6 @@ export async function loader(): Promise<LoaderData> {
     return { menu, socials, logo, altLogo, description };
   } catch (err) {
     if (err instanceof Response) throw err;
-    
     throw new Response("Sanity configuration error", { status: 500, statusText: "Sanity configuration error" });
   }
 }
