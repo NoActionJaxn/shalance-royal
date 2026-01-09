@@ -9,6 +9,38 @@ import {
 
 import type { Route } from "./+types/root";
 import "./app.css";
+import PageContainer from "./components/PageContainer";
+import { Header } from "./components/Header";
+import React from "react";
+import MobileMenu from "./components/MobileMenu";
+import useOnResize from "./hooks/useOnResize";
+import { Footer } from "./components/Footer";
+import type { CallToAction } from "./types/cta";
+
+const MENU: CallToAction[] = [
+  { label: "Home", path: "/" },
+  { label: "About", path: "/about" },
+  { label: "Contact", path: "/contact" },
+];
+
+const SOCIALS: CallToAction[] = [
+  { 
+    label: "Twitter", 
+    path: "https://twitter.com/shalance_royal",
+    icon: {
+      prefix: "fab",
+      iconName: "fa-twitter"
+    }
+  },
+  { 
+    label: "Instagram",
+    path: "https://instagram.com/shalance_royal",
+    icon: {
+      prefix: "fab",
+      iconName: "fa-instagram"
+    }
+  },
+];
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -24,6 +56,18 @@ export const links: Route.LinksFunction = () => [
 ];
 
 export function Layout({ children }: { children: React.ReactNode }) {
+  const [isOpen, setIsOpen] = React.useState(false);
+
+  const handleToggleMenu = () => {
+    setIsOpen((prev) => !prev);
+  }
+
+  const handleCloseMenu = () => {
+    setIsOpen(false);
+  }
+
+  useOnResize({ onResize: handleCloseMenu })
+
   return (
     <html lang="en">
       <head>
@@ -33,8 +77,26 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        {children}
+        <PageContainer>
+          <Header
+            menu={MENU}
+            isOpen={isOpen}
+            toggleMenu={handleToggleMenu}
+          />
+          <MobileMenu
+            menu={MENU}
+            isOpen={isOpen}
+            setIsOpen={setIsOpen}
+          />
+          {children}
+          <Footer menu={MENU} socials={SOCIALS} />
+        </PageContainer>
         <ScrollRestoration />
+        <script
+          src="https://kit.fontawesome.com/1aad4926f4.js"
+          crossOrigin="anonymous"
+          defer
+        />
         <Scripts />
       </body>
     </html>
