@@ -56,8 +56,8 @@ export default function About() {
 
   return (
     <>
-      <Page className="flex items-center justify-center">
-        <Container>
+      <Page className="flex flex-col gap-16 items-center justify-center">
+        <Container className="mt-16">
           <div className=" grid grid-cols-1 md:grid-cols-2 gap-14">
             <div className="grid-cols-1">
               <div className="rounded-lg overflow-hidden mx-auto aspect-3/4">
@@ -75,9 +75,7 @@ export default function About() {
             </div>
           </div>
         </Container>
-      </Page>
-      <Page>
-        <Container>
+        <Container className="mb-16">
           <div className="mt-8 space-y-8">
             <div className="px-4">
               <h2 className="text-3xl font-bold">Gallery</h2>

@@ -7,4 +7,5 @@ export default [
   route("/matches", "routes/matches.tsx"),
   route("/matches/:slug", "routes/matches.$slug.tsx"),
   route("/gallery", "routes/gallery.tsx"),
+  route("/contact", "routes/contact.tsx"),
 ] satisfies RouteConfig;
