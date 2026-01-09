@@ -73,26 +73,14 @@ export const links: Route.LinksFunction = () => [
   },
 ];
 
-export function Layout({ children }: {children: React.ReactNode}) {
+export function Layout({ children }: { children: React.ReactNode }) {
   const data = useLoaderData<LoaderData>();
-  
+
   const menu = data?.menu ?? [];
   const socials = data?.socials ?? [];
   const logo = data?.logo;
   const altLogo = data?.altLogo;
   const description = data?.description;
-
-  const [isOpen, setIsOpen] = React.useState(false);
-
-  const handleToggleMenu = () => {
-    setIsOpen((prev) => !prev);
-  }
-
-  const handleCloseMenu = () => {
-    setIsOpen(false);
-  }
-
-  useOnResize({ onResize: handleCloseMenu })
 
   return (
     <html lang="en">
@@ -103,20 +91,7 @@ export function Layout({ children }: {children: React.ReactNode}) {
         <Links />
       </head>
       <body>
-        <PageContainer>
-          <Header
-            menu={menu}
-            isOpen={isOpen}
-            toggleMenu={handleToggleMenu}
-          />
-          <MobileMenu
-            menu={menu}
-            isOpen={isOpen}
-            setIsOpen={setIsOpen}
-          />
-          {children}
-          <Footer menu={menu} socials={socials} description={description} />
-        </PageContainer>
+        {children}
         <ScrollRestoration />
         <script
           src="https://kit.fontawesome.com/1aad4926f4.js"

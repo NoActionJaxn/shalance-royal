@@ -41,7 +41,7 @@ export default function GridGallery({ title, images }: GridGalleryProps) {
       </section>
       {selectedImage && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
+          className="fixed m-0! inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
           role="dialog"
           aria-modal="true"
           onClick={handleClose}

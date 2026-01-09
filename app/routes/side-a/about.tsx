@@ -7,7 +7,7 @@ import GridGallery from "~/components/GridGallery";
 import { getSanityClient } from "~/lib/client";
 import { WRESTLING_SITE_SETTINGS_REQUEST, WRESTLING_SITE_ABOUT_PAGE_REQUEST, WRESTLING_SITE_GALLERY_PAGE_REQUEST } from "~/constants/requests";
 import type { SanityImage, WrestlingAboutPage, WrestlingGalleryPage, WrestlingSiteSettings } from "~/types/sanity";
-import type { Route } from "./+types/about";
+import type { Route } from "../side-a/+types/about";
 import { LinkButton } from "~/components/Buttons";
 
 interface LoaderData {
@@ -65,7 +65,7 @@ export default function About() {
   return (
     <>
       <Page className="flex flex-col gap-16 items-center justify-center">
-        <Container>
+        <Container className="py-16">
           <div className=" grid grid-cols-1 md:grid-cols-2 gap-14">
             <div className="grid-cols-1">
               <div className="rounded-lg overflow-hidden mx-auto aspect-3/4">
@@ -91,7 +91,7 @@ export default function About() {
               </div>
               <GridGallery images={gallery} title="Gallery" />
               <div className="flex justify-end">
-                <LinkButton to="/gallery">View Full Gallery</LinkButton>
+                <LinkButton to="/side-a/gallery">View Full Gallery</LinkButton>
               </div>
             </div>
           )}
