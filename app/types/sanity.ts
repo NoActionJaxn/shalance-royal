@@ -1,5 +1,3 @@
-import type { S } from "node_modules/react-router/dist/development/router-5iOvts3c.mjs";
-
 export interface SanityBlock {
   _key: string;
   _type: "block";
@@ -84,6 +82,7 @@ export interface WrestlingSiteSettings {
   seo?: SanitySEO;
   socialNetworkItems?: SanityCallToAction[];
   title?: string;
+  description?: string;
 }
 
 export interface WrestlingHomePage {

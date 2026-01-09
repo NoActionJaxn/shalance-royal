@@ -12,7 +12,7 @@ interface HeaderProps {
   toggleMenu?: () => void;
 }
 
-export function Header({ menu, Logo, isOpen = false, toggleMenu }: HeaderProps) {
+export default function Header({ menu, Logo, isOpen = false, toggleMenu }: HeaderProps) {
   return (
     <header className="fixed top-0 left-0 w-full z-40">
       <Container fluid className="flex justify-between items-center h-20">

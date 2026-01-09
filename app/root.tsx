@@ -10,19 +10,20 @@ import {
 } from "react-router";
 import PageContainer from "./components/PageContainer";
 import MobileMenu from "./components/MobileMenu";
-import { Header } from "./components/Header";
-import { Footer } from "./components/Footer";
+import Header from "./components/Header";
+import Footer from "./components/Footer";
 import Page from "./components/Page";
 import Container from "./components/Container";
+import useOnResize from "./hooks/useOnResize";
 import { WRESTLING_SITE_SETTINGS_REQUEST } from "./constants/requests";
 import { getSanityClient } from "./lib/client";
-import useOnResize from "./hooks/useOnResize";
 import type { Route } from "./+types/root";
 import type { CallToAction } from "./types/cta";
 import type { SanityImage, WrestlingSiteSettings } from "./types/sanity";
 import "./app.css";
 
 interface LoaderData {
+  description?: string;
   menu: CallToAction[];
   socials: CallToAction[];
   logo?: SanityImage;
@@ -30,29 +31,38 @@ interface LoaderData {
 }
 
 export async function loader(): Promise<LoaderData> {
-  const client = getSanityClient();
+  try {
+    const client = getSanityClient();
+    const settings: WrestlingSiteSettings = await client.fetch(WRESTLING_SITE_SETTINGS_REQUEST);
 
-  const settings: WrestlingSiteSettings = await client.fetch(WRESTLING_SITE_SETTINGS_REQUEST);
+    if (!settings) {
+      throw new Response("Match not found", { status: 404 });
+    }
 
-  const menu: CallToAction[] = (settings?.menuItems ?? []).map((item) => ({
-    label: item.label,
-    path: item.url,
-  }));
+    const menu: CallToAction[] = (settings?.menuItems ?? []).map((item) => ({
+      label: item.label,
+      path: item.url,
+    }));
 
-  const socials: CallToAction[] = (settings?.socialNetworkItems ?? []).map((item) => ({
-    label: item.label,
-    path: item.url,
-    icon: {
-      prefix: item.icon.iconStyle,
-      iconName: item.icon.iconName,
-    },
-  }));
+    const socials: CallToAction[] = (settings?.socialNetworkItems ?? []).map((item) => ({
+      label: item.label,
+      path: item.url,
+      icon: {
+        prefix: item.icon.iconStyle,
+        iconName: item.icon.iconName,
+      },
+    }));
 
-  const logo: SanityImage | undefined = settings?.logo;
-  
-  const altLogo: SanityImage | undefined = settings?.alternateLogo;
-  console.log(settings?.socialNetworkItems)
-  return { menu, socials, logo, altLogo };
+    const logo: SanityImage | undefined = settings?.logo;
+    const altLogo: SanityImage | undefined = settings?.alternateLogo;
+    const description: string | undefined = settings?.description;
+
+    return { menu, socials, logo, altLogo, description };
+  } catch (err) {
+    if (err instanceof Response) throw err;
+    
+    throw new Response("Sanity configuration error", { status: 500, statusText: "Sanity configuration error" });
+  }
 }
 
 export const links: Route.LinksFunction = () => [
@@ -69,8 +79,14 @@ export const links: Route.LinksFunction = () => [
 ];
 
 export function Layout({ children }: {children: React.ReactNode}) {
-  const { menu, socials, logo, altLogo } = useLoaderData<LoaderData>();
+  const data = useLoaderData<LoaderData>();
   
+  const menu = data?.menu ?? [];
+  const socials = data?.socials ?? [];
+  const logo = data?.logo;
+  const altLogo = data?.altLogo;
+  const description = data?.description;
+
   const [isOpen, setIsOpen] = React.useState(false);
 
   const handleToggleMenu = () => {
@@ -104,7 +120,7 @@ export function Layout({ children }: {children: React.ReactNode}) {
             setIsOpen={setIsOpen}
           />
           {children}
-          <Footer menu={menu} socials={socials} />
+          <Footer menu={menu} socials={socials} description={description} />
         </PageContainer>
         <ScrollRestoration />
         <script
@@ -140,10 +156,10 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
 
   return (
 
-    <Page>
-      <Container fluid>
-        <h1>{message}</h1>
-        <p>{details}</p>
+    <Page className="flex items-center justify-center">
+      <Container className="space-y-2" fluid>
+        <h1 className="text-center text-4xl font-bold">{message}</h1>
+        <p className="text-center text-lg">{details}</p>
         {stack && (
           <pre className="w-full p-4 overflow-x-auto">
             <code>{stack}</code>

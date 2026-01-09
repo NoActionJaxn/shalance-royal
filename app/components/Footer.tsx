@@ -7,14 +7,20 @@ export interface FooterProps {
   logo?: React.ComponentType;
   menu?: CallToAction[];
   socials?: CallToAction[];
+  description?: string;
 }
 
-export function Footer({ logo: Logo, menu = [], socials = [] }: FooterProps) {
+export default function Footer({
+  logo: Logo,
+  menu = [],
+  socials = [],
+  description = "Shalancé Royal"
+}: FooterProps) {
   return (
-    <footer className="bg-slate-950 py-8 mt-16">
+    <footer className="bg-slate-950 py-12 mt-16">
       <Container fluid className="h-full">
         <div className="grid grid-cols-1 md:grid-cols-3 min-h-64 gap-8">
-          <div>
+          <div className="col-span-1">
             <Link to="/" className="flex items-center gap-2">
               <div className="text-slate-200">
                 {Logo && <div><Logo /></div>}
@@ -26,7 +32,7 @@ export function Footer({ logo: Logo, menu = [], socials = [] }: FooterProps) {
               </div>
             </Link>
           </div>
-          <div>
+          <div className="col-span-1">
             {menu.length > 0 && (
               <nav className="mb-4 md:mb-0 space-y-2">
                 <h2 className="text-slate-200 font-semibold">Menu</h2>
@@ -45,9 +51,14 @@ export function Footer({ logo: Logo, menu = [], socials = [] }: FooterProps) {
               </nav>
             )}
           </div>
-          <div className="flex items-end justify-end">
+          <div className="col-span-1 flex flex-col justify-between">
+            <div>
+              {description && (
+                <p className="text-sm text-slate-300 mb-4">{description}</p>
+              )}
+            </div>
             {socials.length > 0 && (
-              <div className="flex items-center gap-4 pb-4">
+              <div className="flex items-center justify-end gap-4">
                 <h2 className="text-xs text-slate-300 uppercase">Follow Me</h2>
                 <ul className="flex flex-wrap gap-4">
                   {socials.map((item) => (
