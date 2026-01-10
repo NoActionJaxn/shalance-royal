@@ -64,20 +64,22 @@ export default function About() {
 
   return (
     <>
-      <Page className="flex flex-col gap-16 items-center justify-center">
-        <Container className="py-16">
-          <div className=" grid grid-cols-1 md:grid-cols-2 gap-14">
-            <div className="grid-cols-1">
-              <div className="rounded-lg overflow-hidden mx-auto aspect-3/4">
-                <Image className="h-full object-cover" asset={about.featuredImage?.asset._ref} />
+      <Page className="flex flex-col gap-4 items-center justify-center">
+        <Container className="pt-24">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+            <div>
+              <div className="mx-auto max-w-md md:max-w-lg overflow-hidden shadow-2xl ring-1 ring-black/10">
+                <div className="aspect-3/4">
+                  <Image className="h-full w-full object-cover" asset={about.featuredImage?.asset._ref} alt={about.title} />
+                </div>
               </div>
             </div>
-            <div className="grid-cols-1 space-y-4">
+            <div className="space-y-6">
               <div className="space-y-2">
-                <h1 className="text-4xl font-bold">{about.title}</h1>
-                <h2 className="text-2xl">{about.subtitle}</h2>
+                <h1 className="text-4xl md:text-5xl font-bold tracking-tight">{about.title}</h1>
+                <h2 className="text-2xl md:text-3xl opacity-90">{about.subtitle}</h2>
               </div>
-              <div>
+              <div className="bg-black/30 text-white p-6 backdrop-blur-sm">
                 <RichText value={about.content} />
               </div>
             </div>
@@ -86,9 +88,6 @@ export default function About() {
         <Container>
           {gallery && gallery.length > 0 && (
             <div className="mt-8 space-y-8">
-              <div className="px-4">
-                <h2 className="text-3xl font-bold">Gallery</h2>
-              </div>
               <GridGallery images={gallery} title="Gallery" />
               <div className="flex justify-end">
                 <LinkButton to="/side-a/gallery">View Full Gallery</LinkButton>

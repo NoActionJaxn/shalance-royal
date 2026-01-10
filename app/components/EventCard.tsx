@@ -12,32 +12,31 @@ export interface EventCard {
 export default function EventCard({ title, start, end, location, eventUrl }: EventCard) {
   const dateLabel = end ? `${start} – ${end}` : start;
 
-  return (
+  const CardContent = (
     <article
       key={`${title}-${start}`}
-      className="flex flex-col gap-4 rounded-lg border border-slate-200 bg-white p-4 shadow-sm md:flex-row md:items-center"
+      className="flex flex-col gap-4 border border-slate-200 bg-white p-4 shadow-sm transition-shadow md:flex-row md:items-center hover:shadow-md"
     >
       <div className="flex-1 space-y-1">
         <p className="text-sm font-medium text-slate-500">{dateLabel}</p>
-        <h3 className="text-lg font-semibold text-slate-900">
-          {title}
-        </h3>
-        {location && (
-          <p className="text-sm text-slate-600">{location}</p>
-        )}
+        <h3 className="text-lg font-semibold text-slate-900">{title}</h3>
+        {location && <p className="text-sm text-slate-600">{location}</p>}
       </div>
-      {eventUrl && (
-        <div className="md:ml-4">
-          <Link
-            to={eventUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex items-center justify-center rounded-full bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700"
-          >
-            View Details
-          </Link>
-        </div>
-      )}
     </article>
-  )
+  );
+
+  if (eventUrl) {
+    return (
+      <Link
+        to={eventUrl}
+        target="_blank"
+        rel="noreferrer"
+        className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400"
+      >
+        {CardContent}
+      </Link>
+    );
+  }
+
+  return CardContent;
 }

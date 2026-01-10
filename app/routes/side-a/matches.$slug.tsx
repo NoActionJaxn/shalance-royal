@@ -65,22 +65,20 @@ export default function MatchDetail() {
             {match.matchTitle}
           </h1>
         </header>
-
         {mainImage && (
-          <div className="overflow-hidden rounded-xl bg-slate-200">
+          <div className="flex items-center justify-center bg-slate-200 rounded-lg" style={{ maxHeight: "40vh" }}>
             <Image
               asset={mainImage.asset._ref}
-              className="h-full w-full object-cover"
+              className="max-h-[40vh] max-w-full h-auto w-auto object-contain"
               alt={match.matchTitle || "Match image"}
             />
           </div>
         )}
-
         <section className="prose max-w-none">
           <RichText value={match.matchDescription ?? []} />
         </section>
       </Container>
-      <Container className="mt-8">
+      <Container>
         <GridGallery images={match.matchImages?.slice(1) ?? []} title="Match Images" />
       </Container>
     </Page>

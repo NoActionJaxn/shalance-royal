@@ -26,10 +26,11 @@ export default function GridGallery({ title, images }: GridGalleryProps) {
 
   return (
     <>
-      <section aria-label="Gallery">
-        <div className="grid grid-cols-2 gap-8 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+      {title && <h2 className="text-2xl font-bold px-4 pt-8">{title}</h2>}
+      <section aria-label="Gallery" className="py-4">
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
           {images.map((image, index) => (
-            <figure key={index} className="relative aspect-square overflow-hidden rounded-lg cursor-pointer">
+            <figure key={index} className="relative aspect-square overflow-hidden cursor-pointer">
               <Image
                 asset={image.asset._ref}
                 className="h-full w-full object-cover transition-transform duration-200 hover:scale-105"
@@ -51,7 +52,7 @@ export default function GridGallery({ title, images }: GridGalleryProps) {
             <figure>
               <Image
                 asset={selectedImage.asset._ref}
-                className="max-h-[80vh] w-auto rounded-lg object-contain"
+                className="max-h-[80vh] w-auto object-contain"
                 onClick={(e) => e.stopPropagation()}
               />
             </figure>

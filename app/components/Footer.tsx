@@ -17,7 +17,7 @@ export default function Footer({
   description = "Shalancé Royal"
 }: FooterProps) {
   return (
-    <footer className="bg-slate-950 py-12 mt-16">
+    <footer className="bg-black py-12 mt-16">
       <Container fluid className="h-full">
         <div className="grid grid-cols-1 md:grid-cols-3 min-h-64 gap-8">
           <div className="col-span-1">

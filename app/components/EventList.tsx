@@ -14,7 +14,7 @@ export interface EventList {
   }[];
 }
 
-export default function EventList({ title = "Upcoming Events", events = [] }: EventList) {
+export default function EventList({ title, events = [] }: EventList) {
   const [visibleCount, setVisibleCount] = useState(3);
 
   const visibleEvents = events.slice(0, visibleCount);
@@ -23,7 +23,7 @@ export default function EventList({ title = "Upcoming Events", events = [] }: Ev
   return (
     <div className="space-y-4">
       <section aria-label="Upcoming events list" className="space-y-4">
-        <h2 className="text-2xl font-semibold">{title}</h2>
+        {title && <h2 className="px-2 text-2xl font-bold">{title}</h2>}
         <div className="space-y-4">
           {visibleEvents.map((event) => {
             const start = formatDate(event.start);
@@ -50,7 +50,7 @@ export default function EventList({ title = "Upcoming Events", events = [] }: Ev
               onClick={() =>
                 setVisibleCount((prev) => Math.min(prev + 3, events.length))
               }
-              className="inline-flex items-center justify-center rounded-full bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700"
+              className="inline-flex items-center justify-center bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700"
             >
               Show more
             </button>

@@ -81,11 +81,17 @@ export default function HomeRoute() {
     ? sideA?.textColor?.hex || "#FFFFFF"
     : sideB?.textColor?.hex || "#000000";
 
-  console.log({ sideA, sideB })
   return (
     <Page
-      className="relative flex flex-col items-center justify-center min-h-screen bg-cover bg-center bg-repeat"
-      style={{ backgroundColor, backgroundImage: backgroundImage ? `url(${backgroundImage})` : undefined, color: textColor }}
+      className="relative flex flex-col items-center justify-center min-h-screen bg-cover bg-bottom bg-no-repeat"
+      style={{
+        backgroundColor,
+        backgroundImage: backgroundImage ? `url(${backgroundImage})` : undefined,
+        backgroundPosition: "center bottom",
+        backgroundRepeat: "no-repeat",
+        backgroundSize: "cover",
+        color: textColor,
+      }}
     >
       <div className="absolute inset-0 pointer-events-none" style={{ backgroundColor, opacity: 0.95 }} />
       <Container className="relative z-10">

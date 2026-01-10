@@ -12,7 +12,7 @@ export default function Container({ children, fluid = false, className, ...rest 
         fluid
           ? "container-fluid"
           : "container mx-auto",
-          "px-16",
+          "px-6 sm:px-8 lg:px-16",
         className
       )}
       {...rest}>

@@ -55,7 +55,7 @@ export default function Gallery() {
     <Page>
       <Container className="py-16 space-y-8">
         <div className="space-y-4">
-          <h1 className="text-4xl">{title}</h1>
+          <h1 className="text-4xl font-bold">{title}</h1>
           <RichText value={content ?? []} />
         </div>
         <div>

@@ -126,7 +126,8 @@ export interface WrestlingHomePage {
   heroTitle?: string;
   heroSubtitle?: string;
   heroContent?: SanityBlock[];
-  heroSectionBackgroundImage?: SanityImage;
+  heroBackgroundImage?: SanityImage;
+  accolades?: WrestlingAccolade[];
 }
 
 export interface WrestlingAboutPage {
@@ -239,4 +240,16 @@ export interface RootSiteSettings {
   content?: SanityBlock[];
   image?: SanityImage;
   route?: CallToAction;
+}
+
+export interface WrestlingAccolade {
+  _type: string;
+  _id: string;
+  _createdAt: string;
+  _updatedAt: string;
+  title: string;
+  description: string;
+  year: number;
+  link: string;
+  author: string;
 }
