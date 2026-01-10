@@ -6,11 +6,29 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useLoaderData,
 } from "react-router";
 import Page from "./components/Page";
 import Container from "./components/Container";
 import type { Route } from "./+types/root";
 import "./app.css";
+import { getSanityClient } from "./lib/client";
+import type { WrestlingSiteSettings } from "./types/sanity";
+import { WRESTLING_SITE_SETTINGS_REQUEST } from "./constants/requests";
+import { imageBuilder } from "./util/imageBuilder";
+
+interface LoaderData {
+  favicon?: WrestlingSiteSettings["favicon"];
+}
+
+export const loader = async () => {
+  const client = getSanityClient();
+  const settings: WrestlingSiteSettings = await client.fetch(WRESTLING_SITE_SETTINGS_REQUEST);
+
+  const favicon = settings?.favicon;
+
+  return { favicon };
+}
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -26,11 +44,21 @@ export const links: Route.LinksFunction = () => [
 ];
 
 export function Layout({ children }: { children: React.ReactNode }) {
+  const data = useLoaderData<LoaderData>();
+  const favicon = data.favicon;
+
   return (
     <html lang="en">
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link
+          rel="icon"
+          type="image/png"
+          href={favicon
+            ? imageBuilder(favicon.asset._ref).url()
+            : "/favicon.png"}
+        />
         <Meta />
         <Links />
       </head>

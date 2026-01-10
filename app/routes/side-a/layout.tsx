@@ -8,10 +8,11 @@ import MobileMenu from "~/components/MobileMenu";
 import PageContainer from "~/components/PageContainer";
 import useOnResize from "~/hooks/useOnResize";
 import type { CallToAction } from "~/types/cta";
-import type { WrestlingSiteSettings } from "~/types/sanity";
+import type { SanityImage, WrestlingSiteSettings } from "~/types/sanity";
 
 interface LoaderData {
   description?: string;
+  logo?: SanityImage;
   menu: CallToAction[];
   socials: CallToAction[];
 }
@@ -35,9 +36,11 @@ export async function loader(): Promise<LoaderData> {
       },
     }));
 
+    const logo = settings?.logo;
+
     const description: string | undefined = settings?.description;
 
-    return { menu, socials, description };
+    return { menu, socials, description, logo };
   } catch (err) {
     if (err instanceof Response) throw err;
     throw new Response("Sanity configuration error", { status: 500, statusText: "Sanity configuration error" });
@@ -61,10 +64,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const menu = data.menu;
   const socials = data.socials;
   const description = data.description;
-
+  const logo = data.logo;
   return (
     <PageContainer>
       <Header
+        logo={logo}
         menu={menu}
         isOpen={isOpen}
         toggleMenu={handleToggleMenu}

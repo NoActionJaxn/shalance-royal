@@ -1,23 +1,25 @@
 import { Link, useLocation } from "react-router";
-import React from "react";
+import { useEffect, useRef, useState } from "react";
 import classNames from "classnames";
 import MenuButton from "./MenuButton";
 import Container from "./Container";
 import type { CallToAction } from "~/types/cta";
+import type { SanityImage } from "~/types/sanity";
+import Image from "./Image";
 
 interface HeaderProps {
-  Logo?: React.ComponentType;
+  logo?: SanityImage;
   menu: CallToAction[];
   isOpen?: boolean;
   toggleMenu?: () => void;
 }
 
-export default function Header({ menu, Logo, isOpen = false, toggleMenu }: HeaderProps) {
+export default function Header({ menu, logo, isOpen = false, toggleMenu }: HeaderProps) {
   const location = useLocation();
-  const headerRef = React.useRef<HTMLElement | null>(null);
-  const [isOverDark, setIsOverDark] = React.useState(false);
+  const headerRef = useRef<HTMLElement | null>(null);
+  const [isOverDark, setIsOverDark] = useState(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     function isPointOverDark(x: number, y: number) {
       const stack = (document as any).elementsFromPoint
         ? (document as any).elementsFromPoint(x, y) as Element[]
@@ -58,15 +60,21 @@ export default function Header({ menu, Logo, isOpen = false, toggleMenu }: Heade
   }, [isOpen, location.pathname]);
   return (
     <header ref={headerRef} className="fixed top-0 left-0 w-full z-40">
-      <Container fluid className="flex justify-between items-center h-20">
+      <Container fluid className="flex justify-between items-center h-28">
         <Link to="/" className="flex items-center gap-2">
           <div className={isOverDark ? "text-slate-100" : "text-slate-900"}>
-            {Logo && <div><Logo /></div>}
-            <div>
-              <span className="text-lg font-semibold tracking-tight">
-                Shalancé Royal
-              </span>
-            </div>
+            {logo ? (
+              <div className="w-42">
+                <Image className="w-full" asset={logo.asset._ref} />
+              </div>
+            ) : (
+              <div>
+                <span className="text-lg font-semibold tracking-tight">
+                  Shalancé Royal
+                </span>
+              </div>
+            )}
+
           </div>
         </Link>
 
